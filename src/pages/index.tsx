@@ -1,9 +1,9 @@
-import style from '../styles/home.module.css'
+import style from '../styles/home.module.scss'
 
 export default function Home() {
   return (
     <h1 className={style.title}>
-      Hello World
+      Hello <span>World</span>
     </h1>
   )
 }
