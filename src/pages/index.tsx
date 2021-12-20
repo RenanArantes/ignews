@@ -1,5 +1,9 @@
+import style from '../styles/home.module.css'
+
 export default function Home() {
   return (
-    <h1>Hello Worldd</h1>
+    <h1 className={style.title}>
+      Hello World
+    </h1>
   )
 }
