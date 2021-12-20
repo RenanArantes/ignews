@@ -37,6 +37,11 @@
             &.active {
                 color: var(--white);
                 font-weight: bold;
+
+                transition: filter 0.2s;
+                &:hover {
+                    filter: brightness(0.8);
+                }
             }
 
             &.active::after {
