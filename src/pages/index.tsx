@@ -17,6 +17,8 @@ export default function Home({ product }: HomeProps) {
     <>
       <Head>
         <title>Home | ig.news</title>
+        <meta name="viewport" content="initial-scale=0.5, width=device-width" />
+        <meta name="theme-color" content="#121214" />
       </Head>
       
       <main className={styles.contentContainer}>
