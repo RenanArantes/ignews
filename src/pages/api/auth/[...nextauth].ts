@@ -12,14 +12,10 @@ export default NextAuth({
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
     }),
   ],
-  jwt: {
-    secret: process.env.SIGNIN_KEY_JWT,
-  },
+  secret: process.env.SIGNIN_KEY_JWT,
   callbacks: {
     async signIn({user, account, profile }) {
       const { email } = user
-    
-      console.log(email)
 
       try {
         await fauna.query(
