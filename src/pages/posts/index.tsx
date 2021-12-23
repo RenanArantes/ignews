@@ -1,10 +1,24 @@
 import { GetStaticProps } from 'next'
 import Head from 'next/head'
 import Prismic from '@prismicio/client'
+import { RichText } from 'prismic-dom'
+
 import { getPrismicCLient } from '../../services/prismic'
+
 import styles from './styles.module.scss'
 
-export default function Posts() {
+type Post = {
+    slug: string,
+    title: string,
+    excerpt: string,
+    updatedAt: string
+}
+
+interface PostsProps {
+    posts: Post[]
+}
+
+export default function Posts({ posts }: PostsProps) {
     return (
         <>
             <Head>
@@ -13,39 +27,19 @@ export default function Posts() {
 
             <main className={styles.container}>
                 <div className={styles.posts}>
-                    <a href='#'>
-                        <time>
-                            19 de fevereiro de 2022
-                        </time>
-                        <strong>
-                            Título CLickbaiter do Post
-                        </strong>
-                        <p>
-                            Lord Ipsum proin eleifend odio tortor, sit amet bibendum mauris hendrerit eu. Nulla quis tellus accumsan, fringilla turpis sit amet, faucibus eros. Donec venenatis egestas odio convallis commodo. Praesent vehicula ex eget feugiat luctus. Aliquam quis tincidunt libero. Praesent at tincidunt tortor. Pellentesque vel vestibulum quam, in fringilla leo. Vivamus vestibulum vel ipsum nec lacinia.
-                        </p>
-                    </a>
-                    <a href='#'>
-                        <time>
-                            19 de fevereiro de 2022
-                        </time>
-                        <strong>
-                            Título CLickbaiter do Post
-                        </strong>
-                        <p>
-                            Lord Ipsum proin eleifend odio tortor, sit amet bibendum mauris hendrerit eu. Nulla quis tellus accumsan, fringilla turpis sit amet, faucibus eros. Donec venenatis egestas odio convallis commodo. Praesent vehicula ex eget feugiat luctus. Aliquam quis tincidunt libero. Praesent at tincidunt tortor. Pellentesque vel vestibulum quam, in fringilla leo. Vivamus vestibulum vel ipsum nec lacinia.
-                        </p>
-                    </a>
-                    <a href='#'>
-                        <time>
-                            19 de fevereiro de 2022
-                        </time>
-                        <strong>
-                            Título CLickbaiter do Post
-                        </strong>
-                        <p>
-                            Lord Ipsum proin eleifend odio tortor, sit amet bibendum mauris hendrerit eu. Nulla quis tellus accumsan, fringilla turpis sit amet, faucibus eros. Donec venenatis egestas odio convallis commodo. Praesent vehicula ex eget feugiat luctus. Aliquam quis tincidunt libero. Praesent at tincidunt tortor. Pellentesque vel vestibulum quam, in fringilla leo. Vivamus vestibulum vel ipsum nec lacinia.
-                        </p>
-                    </a>
+                    { posts.map(post => (
+                        <a key={post.slug} href={post.slug}>
+                            <time>
+                                {post.updatedAt}
+                            </time>
+                            <strong>
+                                {post.title}
+                            </strong>
+                            <p>
+                                {post.excerpt}
+                            </p>
+                        </a>
+                    ))}
                 </div>
             </main>
         </>
@@ -62,9 +56,22 @@ export const getStaticProps: GetStaticProps = async () => {
            pageSize: 100,
         })
 
-    console.log(response)
+    const posts = response.results.map(post => {
+        return {
+            slug: post.uid,
+            title: RichText.asText(post.data.title),
+            excerpt: post.data.content.find(c => c.type === 'paragraph')?.text ?? '',
+            updatedAt: new Date(post.last_publication_date).toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric'
+            })
+        }
+    })
 
     return {
-        props: {}
+        props: {
+            posts
+        }
     }
 }
